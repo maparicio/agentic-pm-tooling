@@ -87,22 +87,48 @@ echo '<p>Updated content</p>' | node .claude/skills/confluence.js update 123456
 
 # Update with title change
 echo '{"title":"New Title","content":"<p>Updated</p>"}' | node .claude/skills/confluence.js update 123456
+
+# Search for pages by title (fuzzy match across all spaces)
+node .claude/skills/confluence.js search "Evaluation Toolchain"
+
+# Search in a specific space with exact matching
+node .claude/skills/confluence.js search "PRD" --space AIP --exact
+
+# Search with custom result limit
+node .claude/skills/confluence.js search "Feature Spec" --limit 10
+
+# Combine multiple search options
+node .claude/skills/confluence.js search "Page Title" --space PROJ --exact --limit 5
 ```
+
+**Commands:**
+1. `read <page-id>` - Fetch a specific page by ID
+2. `create <space-key> <title> [parent-id]` - Create a new page (content via stdin)
+3. `update <page-id>` - Update an existing page (content via stdin)
+4. `search <title> [--space <key>] [--exact] [--limit <n>]` - Search for pages by title using CQL
+
+**Search Command Options:**
+- `--space <key>` - Limit search to specific space (optional)
+- `--exact` - Use exact title matching instead of fuzzy search (optional)
+- `--limit <n>` - Maximum number of results to return (default: 25, optional)
 
 **Content Format:**
 - For `create`: Plain text via stdin (Confluence storage format/XHTML)
 - For `update`: JSON via stdin with optional fields: `title`, `content`, `versionMessage`
+- For `search`: Uses CQL (Confluence Query Language) via REST API v1; returns JSON with results
 
 ## Natural Language with Claude Code
 
 Simply ask Claude Code:
 
 ```
-"Fetch Productboard feature 12345 and create a PRD"
-"Search Dovetail for research about mobile checkout"
+"Fetch Productboard feature 12345 and create a PRD in Confluence"
+"Search Confluence for existing documentation about mobile checkout"
+"Search Dovetail for research about mobile checkout and find related pages in Confluence"
 "Get highlights from project abc123 and analyze themes"
 "Compare Productboard features with Dovetail insights on payments"
-"Create a page in Confluence with the PRD from Productboard"
+"Create a page in Confluence with the PRD from Productboard and link to related pages"
+"Find all PRD documents in the PROJ space that mention 'authentication'"
 ```
 
 ## Environment Variables
@@ -124,11 +150,18 @@ DOVETAIL_API_URL=https://dovetail.com/api/v1  # Optional, defaults to shown valu
 ### Confluence (Required)
 
 ```env
+# Primary variables (recommended)
+CONFLUENCE_API_TOKEN=your_token
+CONFLUENCE_BASE_URL=https://yoursite.atlassian.net
+CONFLUENCE_USER_EMAIL=your.email@example.com
 
-ATLASSIAN_API_TOKEN=your_token  # or ATLASSIAN_API_TOKEN
-ATLASSIAN_BASE_URL=https://yoursite.atlassian.net  # or ATLASSIAN_SITE_URL
-ATLASSIAN_USER_EMAIL=your.email@example.com  # or ATLASSIAN_USER_EMAIL
+# Alternative variables (also supported for Atlassian compatibility)
+ATLASSIAN_API_TOKEN=your_token
+ATLASSIAN_SITE_URL=https://yoursite.atlassian.net
+ATLASSIAN_USER_EMAIL=your.email@example.com
 ```
+
+**Note:** The skill accepts both `CONFLUENCE_*` and `ATLASSIAN_*` prefixes. Use whichever matches your existing configuration.
 
 ### PII Filtering (Optional, all default to true)
 
@@ -167,6 +200,8 @@ Check stderr output for filtering statistics after each command.
 | API errors | Verify tokens are valid and not expired |
 | Confluence: Authentication failed | Verify `CONFLUENCE_USER_EMAIL` or `ATLASSIAN_USER_EMAIL` is correct |
 | Confluence: Space not found | Use the correct space key (e.g., "PROJ" not "Project Name") |
+| Confluence: Search returns no results | Try fuzzy search without `--exact` flag, or verify the page exists and is indexed |
+| Confluence: Search is slow | Reduce `--limit` value or add `--space` to narrow search scope |
 
 ## Quick Test
 
@@ -177,8 +212,11 @@ node .claude/skills/productboard.js features 5
 # Test Dovetail
 node .claude/skills/dovetail.js projects
 
-# Test Confluence (requires page ID to exist)
+# Test Confluence - read (requires page ID to exist)
 node .claude/skills/confluence.js read 123456
+
+# Test Confluence - search (works without existing pages)
+node .claude/skills/confluence.js search "PRD" --limit 5
 ```
 
 All commands output JSON with PII automatically filtered.

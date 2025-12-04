@@ -295,7 +295,10 @@ See: `./TESTING.md` for details
 
 ## Recent Changes
 
-### 2025-12-04
+### 2025-12-04 (Later)
+- **Updated QUICK_REFERENCE.md for Confluence search documentation** - Added complete documentation for the new Confluence `search` command with CQL support. Documented all flags: `--space <key>`, `--exact`, and `--limit <n>`. Added comprehensive examples showing fuzzy search, exact matching, space filtering, and limit configuration. Updated natural language examples to show Confluence search workflows. Clarified environment variables section with both CONFLUENCE_* and ATLASSIAN_* prefixes with clear notes. Enhanced troubleshooting with search-specific issues and solutions. Added Confluence search to quick test examples. Documentation now fully reflects implementation.
+
+### 2025-12-04 (Earlier)
 - **Implemented Confluence search by title** - Added `search` command with CQL support for fuzzy/exact title matching. Uses REST API v1 for CQL queries. Supports space filtering, custom limits. Added 10 comprehensive tests. confluence.js grew from 407 to 532 lines (+125 lines). confluence.test.js grew to 681 lines (+160 lines with search tests). All 159 tests passing. Overall coverage improved from ~77% to ~80%.
 - **Updated Confluence skill to support ATLASSIAN_* env variables** - Added fallback support for ATLASSIAN_API_TOKEN, ATLASSIAN_SITE_URL, and ATLASSIAN_USER_EMAIL alongside CONFLUENCE_* variables for better compatibility with existing Atlassian configurations.
 - **Updated QUICK_REFERENCE.md for complete skill documentation** - Added comprehensive Confluence skill section (was completely missing), updated all command examples with accurate syntax, added environment variable documentation for all three skills with both CONFLUENCE_ and ATLASSIAN_ prefix support, expanded examples with owner filtering and feature filtering for Productboard, added usage notes and content format specifications for Confluence, improved troubleshooting section with Confluence-specific issues, updated natural language examples to include Confluence workflow
