@@ -8,175 +8,115 @@ cp .env.example .env
 # Edit .env with your API tokens
 ```
 
-## Skill Commands
+## Available Skills
+
+- **Productboard** - Product feature management (6 commands)
+- **Dovetail** - User research analysis (6 commands)
+- **Confluence** - Documentation management (4 commands)
+
+## Command Summary
 
 ### Productboard
 
 ```bash
-# List features (default limit: 100)
-node .claude/skills/productboard.js features 20
-
-# Get specific feature
-node .claude/skills/productboard.js feature 12345
-
-# Get notes for a specific feature
-node .claude/skills/productboard.js notes 12345
-
-# Get specific note by ID
-node .claude/skills/productboard.js get-note abc-123-def-456
-
-# List all notes from workspace (default limit: 100)
-node .claude/skills/productboard.js all-notes 50
-
-# List all notes filtered by owner alias
-node .claude/skills/productboard.js all-notes 50 --owner alice
-
-# List all notes filtered by feature ID
-node .claude/skills/productboard.js all-notes 50 --feature feature-123
-
-# Search features by keyword
-node .claude/skills/productboard.js search "checkout"
+node .claude/skills/productboard.js <command> [options]
 ```
 
-**Owner Email Aliases:** Configure in `.env` to filter by owner without exposing emails:
-```env
-OWNER_EMAIL_ALICE=alice@example.com
-OWNER_EMAIL_BOB=bob@example.com
-```
-Then use: `--owner alice`
+**Commands:**
+- `features [limit] [--owner <alias>]` - List features (default: 100)
+- `feature <id>` - Get specific feature
+- `notes <feature-id>` - Get notes for a feature
+- `get-note <note-id>` - Get specific note
+- `all-notes [limit] [--owner <alias>] [--feature <id>]` - List all notes (default: 100)
+- `search "<query>"` - Search features by keyword
+
+**Owner Aliases:** Configure `OWNER_EMAIL_<ALIAS>=email@example.com` in `.env`, then use `--owner <alias>`
+
+📖 **Full documentation:** `.claude/skills/productboard.md`
 
 ### Dovetail
 
 ```bash
-# List research projects (default limit: 20)
-node .claude/skills/dovetail.js projects
-
-# Get specific project details
-node .claude/skills/dovetail.js project abc123
-
-# Get insights from a project (default limit: 50)
-node .claude/skills/dovetail.js insights abc123 100
-
-# Get highlights from a project
-node .claude/skills/dovetail.js highlights abc123
-
-# List all tags globally
-node .claude/skills/dovetail.js tags
-
-# List tags for a specific project
-node .claude/skills/dovetail.js tags abc123
-
-# Search across insights and highlights
-node .claude/skills/dovetail.js search "payment issues"
+node .claude/skills/dovetail.js <command> [options]
 ```
+
+**Commands:**
+- `projects [limit]` - List research projects (default: 20)
+- `project <id>` - Get specific project
+- `insights <project-id> [limit]` - Get insights (default: 50)
+- `highlights <project-id>` - Get highlights
+- `tags [project-id]` - List tags (globally or for project)
+- `search "<query>"` - Search insights and highlights
+
+📖 **Full documentation:** `.claude/skills/dovetail.md`
 
 ### Confluence
 
 ```bash
-# Read a specific page by ID
-node .claude/skills/confluence.js read 123456
-
-# Create a new page (content via stdin)
-echo '<p>Page content here</p>' | node .claude/skills/confluence.js create "PROJ" "Page Title"
-
-# Create a page as a child of another page
-echo '<p>Content</p>' | node .claude/skills/confluence.js create "PROJ" "Subpage Title" 123456
-
-# Update an existing page (content via stdin as plain text or JSON)
-echo '<p>Updated content</p>' | node .claude/skills/confluence.js update 123456
-
-# Update with title change
-echo '{"title":"New Title","content":"<p>Updated</p>"}' | node .claude/skills/confluence.js update 123456
-
-# Search for pages by title (fuzzy match across all spaces)
-node .claude/skills/confluence.js search "Evaluation Toolchain"
-
-# Search in a specific space with exact matching
-node .claude/skills/confluence.js search "PRD" --space AIP --exact
-
-# Search with custom result limit
-node .claude/skills/confluence.js search "Feature Spec" --limit 10
-
-# Combine multiple search options
-node .claude/skills/confluence.js search "Page Title" --space PROJ --exact --limit 5
+node .claude/skills/confluence.js <command> [options]
 ```
 
 **Commands:**
-1. `read <page-id>` - Fetch a specific page by ID
-2. `create <space-key> <title> [parent-id]` - Create a new page (content via stdin)
-3. `update <page-id>` - Update an existing page (content via stdin)
-4. `search <title> [--space <key>] [--exact] [--limit <n>]` - Search for pages by title using CQL
+- `read <page-id>` - Fetch page by ID
+- `create <space-key> "<title>" [parent-id]` - Create page (content via stdin)
+- `update <page-id>` - Update page (content via stdin)
+- `search "<title>" [--space <key>] [--exact] [--limit <n>]` - Search by title (default limit: 25)
 
-**Search Command Options:**
-- `--space <key>` - Limit search to specific space (optional)
-- `--exact` - Use exact title matching instead of fuzzy search (optional)
-- `--limit <n>` - Maximum number of results to return (default: 25, optional)
+**Search Options:**
+- `--space <key>` - Limit to specific space
+- `--exact` - Exact match instead of fuzzy
+- `--limit <n>` - Max results
 
-**Content Format:**
-- For `create`: Plain text via stdin (Confluence storage format/XHTML)
-- For `update`: JSON via stdin with optional fields: `title`, `content`, `versionMessage`
-- For `search`: Uses CQL (Confluence Query Language) via REST API v1; returns JSON with results
+**Content via stdin:**
+- `create`: Plain storage format (XHTML)
+- `update`: Plain text or JSON `{"title":"...","content":"...","versionMessage":"..."}`
 
-## Natural Language with Claude Code
+📖 **Full documentation:** `.claude/skills/confluence.md`
 
-Simply ask Claude Code:
+## Natural Language Usage
+
+Ask Claude Code naturally:
 
 ```
 "Fetch Productboard feature 12345 and create a PRD in Confluence"
-"Search Confluence for existing documentation about mobile checkout"
-"Search Dovetail for research about mobile checkout and find related pages in Confluence"
-"Get highlights from project abc123 and analyze themes"
-"Compare Productboard features with Dovetail insights on payments"
-"Create a page in Confluence with the PRD from Productboard and link to related pages"
-"Find all PRD documents in the PROJ space that mention 'authentication'"
+"Search Dovetail for research about checkout and summarize themes"
+"Find all PRD documents in Confluence that mention authentication"
+"Get highlights from Dovetail project abc123 and analyze patterns"
 ```
 
 ## Environment Variables
 
 ### Productboard (Required)
-
 ```env
 PRODUCTBOARD_API_TOKEN=your_token
-PRODUCTBOARD_API_URL=https://api.productboard.com  # Optional, defaults to shown value
+PRODUCTBOARD_API_URL=https://api.productboard.com  # Optional
 ```
 
 ### Dovetail (Required)
-
 ```env
 DOVETAIL_API_TOKEN=your_token
-DOVETAIL_API_URL=https://dovetail.com/api/v1  # Optional, defaults to shown value
+DOVETAIL_API_URL=https://dovetail.com/api/v1  # Optional
 ```
 
-### Confluence (Required)
-
+### Confluence (Required - use either prefix)
 ```env
-# Primary variables (recommended)
+# Option 1: CONFLUENCE_* prefix (recommended)
 CONFLUENCE_API_TOKEN=your_token
 CONFLUENCE_BASE_URL=https://yoursite.atlassian.net
 CONFLUENCE_USER_EMAIL=your.email@example.com
 
-# Alternative variables (also supported for Atlassian compatibility)
+# Option 2: ATLASSIAN_* prefix (alternative)
 ATLASSIAN_API_TOKEN=your_token
 ATLASSIAN_SITE_URL=https://yoursite.atlassian.net
 ATLASSIAN_USER_EMAIL=your.email@example.com
 ```
 
-**Note:** The skill accepts both `CONFLUENCE_*` and `ATLASSIAN_*` prefixes. Use whichever matches your existing configuration.
-
-### PII Filtering (Optional, all default to true)
-
+### PII Filtering (Optional - all default to true)
 ```env
 PII_FILTER_ENABLED=true
 PII_ANONYMIZE_EMAILS=true
 PII_ANONYMIZE_NAMES=true
 PII_ANONYMIZE_PHONE=true
-```
-
-### Productboard Owner Aliases (Optional)
-
-```env
-OWNER_EMAIL_ALICE=alice@example.com
-OWNER_EMAIL_BOB=bob@example.com
 ```
 
 ## Privacy Features
@@ -187,45 +127,37 @@ All skills automatically filter PII before sending data to the LLM:
 - Phone numbers → `[PHONE_1]`, `[PHONE_2]`
 - Companies → `Company 1`, `Enterprise Client 2`
 
-Check stderr output for filtering statistics after each command.
+Check stderr for filtering statistics after each command.
 
 ## Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
-| "API token not found" | Check `.env` file exists with correct tokens for the skill you're using |
+| "API token not found" | Check `.env` has correct tokens for the skill |
 | "Permission denied" | Run `chmod +x .claude/skills/*.js` |
 | "Module not found" | Run `npm install` |
 | PII still visible | Check `PII_FILTER_ENABLED=true` in `.env` |
 | API errors | Verify tokens are valid and not expired |
 | Confluence: Authentication failed | Verify `CONFLUENCE_USER_EMAIL` or `ATLASSIAN_USER_EMAIL` is correct |
-| Confluence: Space not found | Use the correct space key (e.g., "PROJ" not "Project Name") |
-| Confluence: Search returns no results | Try fuzzy search without `--exact` flag, or verify the page exists and is indexed |
-| Confluence: Search is slow | Reduce `--limit` value or add `--space` to narrow search scope |
+| Confluence: Space not found | Use space key (e.g., "PROJ" not "Project Name") |
+| Confluence: Search no results | Try without `--exact` flag, or verify page exists and is indexed |
 
 ## Quick Test
 
 ```bash
-# Test Productboard
+# Test each skill
 node .claude/skills/productboard.js features 5
-
-# Test Dovetail
 node .claude/skills/dovetail.js projects
-
-# Test Confluence - read (requires page ID to exist)
-node .claude/skills/confluence.js read 123456
-
-# Test Confluence - search (works without existing pages)
 node .claude/skills/confluence.js search "PRD" --limit 5
 ```
 
 All commands output JSON with PII automatically filtered.
 
-## Documentation
+## Full Documentation
 
 - **README.md** - Setup guide and overview
 - **PM_ASSISTANT_GUIDE.md** - Architecture and workflows
 - **TESTING.md** - Test guide and patterns
-- **.claude/skills/productboard.md** - Productboard skill documentation
-- **.claude/skills/dovetail.md** - Dovetail skill documentation
-- **.claude/skills/confluence.md** - Confluence skill documentation
+- **.claude/skills/productboard.md** - Productboard details & examples
+- **.claude/skills/dovetail.md** - Dovetail details & examples
+- **.claude/skills/confluence.md** - Confluence details & examples
