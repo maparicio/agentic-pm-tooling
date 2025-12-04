@@ -4,19 +4,26 @@
   "description": "Privacy-first AI assistant for Product Management work",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests/**/*.test.js --timeout 5000",
+    "test:watch": "mocha tests/**/*.test.js --watch",
+    "test:coverage": "nyc mocha tests/**/*.test.js"
   },
   "keywords": [
     "pm",
     "product-management",
     "ai-assistant",
     "productboard",
-    "dovetail"
+    "dovetail",
+    "confluence"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.4.5",
     "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.8.2",
+    "nyc": "^17.1.0"
   }
 }

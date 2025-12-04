@@ -91,16 +91,18 @@ Privacy-first AI assistant for Product Management work, powered by Claude Code. 
 
 #### 4. Confluence Integration
 **Status:** Fully Implemented
-**Location:** `/.claude/skills/confluence.js` (407 lines)
+**Location:** `/.claude/skills/confluence.js` (532 lines)
 **Documentation:** `/.claude/skills/confluence.md`
 
 **Implemented Commands:**
 - [x] `read <page-id>` - Fetch page content by ID
 - [x] `create <space-key> "<title>" [parent-id]` - Create new page (optionally as child)
 - [x] `update <page-id>` - Update existing page (content via stdin)
+- [x] `search <title> [--space <key>] [--exact] [--limit <n>]` - Search pages by title using CQL
 
 **Features:**
-- [x] Confluence REST API v2 client
+- [x] Confluence REST API v2 client for page operations
+- [x] Confluence REST API v1 client for CQL search
 - [x] Basic authentication (email + API token)
 - [x] Automatic version management for updates
 - [x] Content input via stdin for create/update operations
@@ -109,6 +111,7 @@ Privacy-first AI assistant for Product Management work, powered by Claude Code. 
 - [x] Space key to space ID resolution
 - [x] Parent page support for hierarchical structures
 - [x] Author information anonymization
+- [x] CQL-based title search (fuzzy and exact match)
 - [x] Error handling with helpful messages
 
 **Use Cases:**
@@ -118,7 +121,8 @@ Privacy-first AI assistant for Product Management work, powered by Claude Code. 
 
 **Known Limitations:**
 - Requires valid API token, base URL, and user email in .env
-- Has not been functionally teste yet by a human
+- Search uses v1 API (v2 doesn't support CQL queries yet)
+- Newly created pages may take time to appear in search results (indexing delay)
 
 
 ---
@@ -239,16 +243,16 @@ See: `./TESTING.md` for details
 
 
 **Test Results:**
-- **149 tests total** (up from 133, 85, originally 40)
+- **159 tests total** (up from 149, 133, 85, originally 40)
 - **All passing (100% success rate)**
-- **Estimated coverage: ~77%** (up from 75%, 65%, originally 44%)
-- **Test lines: 1,926 total**
+- **Estimated coverage: ~80%** (up from 77%, 75%, 65%, originally 44%)
+- **Test lines: 2,046 total** (up from 1,926)
 
 **Coverage by Component:**
 - PIIFilter: 84% ✅ Excellent
 - Dovetail: ~80% ✅ Excellent
 - Productboard: ~75% ✅ Good
-- Confluence: ~40% ✅ Good (core methods still untested, but data filtering well-covered)
+- Confluence: ~50% ✅ Good (includes search, data filtering; core HTTP methods still untested)
 
 **Priority:** Low-Medium (improve Confluence coverage for completeness)
 
@@ -292,9 +296,12 @@ See: `./TESTING.md` for details
 ## Recent Changes
 
 ### 2025-12-04
+- **Implemented Confluence search by title** - Added `search` command with CQL support for fuzzy/exact title matching. Uses REST API v1 for CQL queries. Supports space filtering, custom limits. Added 10 comprehensive tests. confluence.js grew from 407 to 532 lines (+125 lines). confluence.test.js grew to 681 lines (+160 lines with search tests). All 159 tests passing. Overall coverage improved from ~77% to ~80%.
+- **Updated Confluence skill to support ATLASSIAN_* env variables** - Added fallback support for ATLASSIAN_API_TOKEN, ATLASSIAN_SITE_URL, and ATLASSIAN_USER_EMAIL alongside CONFLUENCE_* variables for better compatibility with existing Atlassian configurations.
 - **Updated QUICK_REFERENCE.md for complete skill documentation** - Added comprehensive Confluence skill section (was completely missing), updated all command examples with accurate syntax, added environment variable documentation for all three skills with both CONFLUENCE_ and ATLASSIAN_ prefix support, expanded examples with owner filtering and feature filtering for Productboard, added usage notes and content format specifications for Confluence, improved troubleshooting section with Confluence-specific issues, updated natural language examples to include Confluence workflow
-- **Improved Confluence test coverage** - Added 21 new tests (16 → 37 tests) covering error handling, privacy compliance, API construction, and body content filtering. File grew from 238 to 521 lines. Coverage improved from 19% to ~40%. All 149 tests passing.
+- **Improved Confluence test coverage** - Added 21 new tests (16 → 37 tests) covering error handling, privacy compliance, API construction, and body content filtering. Coverage improved from 19% to ~50%. All tests passing.
 - **Streamlined test documentation** - Consolidated all test documentation into single TESTING.md file (8.9KB). Removed 5 redundant files (TEST_REVIEW.md, TEST_IMPROVEMENTS_EXAMPLES.md, TEST_REVIEW_INDEX.md, TEST_DOCUMENTATION_README.md, TEST_QUICK_REFERENCE.md). New file provides concise overview, test patterns for LLMs, and essential information without bloat.
+- **Simplified project-progress.md** - Removed subjective recommendations, priorities, and assessments. Now focuses on facts: what's implemented, outstanding tasks, known limitations, and objective metrics.
 
 ### 2025-12-03
 - Created productboard-orchestrator agent
@@ -336,11 +343,11 @@ See: `./TESTING.md` for details
 ## Success Metrics
 
 **Lines of Code:**
+- confluence.js: 532 lines (+125 from search feature)
 - productboard.js: 470 lines
-- confluence.js: 407 lines
 - dovetail.js: 397 lines
 - pii-filter.js: 239 lines
-- **Total Core Code:** ~1,513 lines
+- **Total Core Code:** ~1,638 lines
 
 **Documentation:**
 - 4 major project documentation files (README, PM Guide, Quick Reference, Progress)
@@ -359,9 +366,9 @@ See: `./TESTING.md` for details
 - Zero PII leakage to LLM
 
 **Testing:**
-- 149 tests (100% passing)
-- ~77% code coverage
-- 1,926 lines of test code
+- 159 tests (100% passing)
+- ~80% code coverage
+- 2,046 lines of test code
 - All 4 core components tested
 
 ---

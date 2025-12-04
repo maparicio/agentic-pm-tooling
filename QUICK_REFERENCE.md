@@ -124,10 +124,10 @@ DOVETAIL_API_URL=https://dovetail.com/api/v1  # Optional, defaults to shown valu
 ### Confluence (Required)
 
 ```env
-# Use either CONFLUENCE_ or ATLASSIAN_ prefixes (both supported)
-CONFLUENCE_API_TOKEN=your_token  # or ATLASSIAN_API_TOKEN
-CONFLUENCE_BASE_URL=https://yoursite.atlassian.net  # or ATLASSIAN_SITE_URL
-CONFLUENCE_USER_EMAIL=your.email@example.com  # or ATLASSIAN_USER_EMAIL
+
+ATLASSIAN_API_TOKEN=your_token  # or ATLASSIAN_API_TOKEN
+ATLASSIAN_BASE_URL=https://yoursite.atlassian.net  # or ATLASSIAN_SITE_URL
+ATLASSIAN_USER_EMAIL=your.email@example.com  # or ATLASSIAN_USER_EMAIL
 ```
 
 ### PII Filtering (Optional, all default to true)
