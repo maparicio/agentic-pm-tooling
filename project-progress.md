@@ -296,6 +296,7 @@ See: `./TESTING.md` for details
 ## Recent Changes
 
 ### 2025-12-04 (Later)
+- **Optimized QUICK_REFERENCE.md structure** - Reduced from 232 to 163 lines (-69 lines, -30%). Removed detailed examples (now in skill-specific docs). Focused on command one-liners, environment variables, and troubleshooting. Added "Full documentation" pointers to individual skill .md files. Reduces duplication while maintaining quick lookup capability.
 - **Updated QUICK_REFERENCE.md for Confluence search documentation** - Added complete documentation for the new Confluence `search` command with CQL support. Documented all flags: `--space <key>`, `--exact`, and `--limit <n>`. Added comprehensive examples showing fuzzy search, exact matching, space filtering, and limit configuration. Updated natural language examples to show Confluence search workflows. Clarified environment variables section with both CONFLUENCE_* and ATLASSIAN_* prefixes with clear notes. Enhanced troubleshooting with search-specific issues and solutions. Added Confluence search to quick test examples. Documentation now fully reflects implementation.
 
 ### 2025-12-04 (Earlier)
