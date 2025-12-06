@@ -24,6 +24,7 @@ You maintain full control over what data the AI sees. All sensitive data (emails
 
 - **Productboard** - Feature management and roadmapping
 - **Dovetail** - User research and insights
+- **Confluence** - Documentation and PRD management
 
 ## Setup
 
@@ -48,11 +49,15 @@ You maintain full control over what data the AI sees. All sensitive data (emails
 3. **Get API tokens:**
    - **Productboard**: Settings → Integrations → API → Generate token
    - **Dovetail**: Settings → Integrations → API → Generate token
+   - **Confluence**: Atlassian Account → Security → API tokens → Create token
 
    Add tokens to `.env`:
    ```env
    PRODUCTBOARD_API_TOKEN=pb_xxxxxxxxxxxxxxxxxxxxx
    DOVETAIL_API_TOKEN=dvt_xxxxxxxxxxxxxxxxxxxxx
+   CONFLUENCE_API_TOKEN=your_confluence_token
+   CONFLUENCE_SITE_URL=https://your-site.atlassian.net
+   CONFLUENCE_USER_EMAIL=your@email.com
    ```
 
 4. **Make skills executable:**
@@ -64,6 +69,7 @@ You maintain full control over what data the AI sees. All sensitive data (emails
    ```bash
    node .claude/skills/productboard.js features 5
    node .claude/skills/dovetail.js projects
+   node .claude/skills/confluence.js search "Product Requirements"
    ```
 
 ## Usage
@@ -71,9 +77,10 @@ You maintain full control over what data the AI sees. All sensitive data (emails
 Simply ask Claude Code to help with PM tasks:
 
 ```
-"Fetch Productboard feature 12345 and create a PRD"
+"Fetch Productboard feature 12345 and create a PRD in Confluence"
 "Analyze Dovetail highlights from project abc123 about checkout flows"
 "Compare Productboard requests with Dovetail research on mobile payments"
+"Update Confluence page 123456 with the latest feature requirements"
 ```
 
 Claude will:
@@ -97,7 +104,7 @@ Claude will:
 ```
 .claude/
   agents/              # Agent configurations
-  skills/              # Integration scripts (productboard.js, dovetail.js)
+  skills/              # Integration scripts (productboard.js, dovetail.js, confluence.js)
 utils/
   pii-filter.js        # PII filtering utility
 .env.example           # Configuration template
@@ -125,6 +132,7 @@ README.md              # This file
 - **[Quick Reference](QUICK_REFERENCE.md)** - Command reference
 - **[Productboard Skill](.claude/skills/productboard.md)** - Productboard integration
 - **[Dovetail Skill](.claude/skills/dovetail.md)** - Dovetail integration
+- **[Confluence Skill](.claude/skills/confluence.md)** - Confluence integration
 
 ## Advanced
 
