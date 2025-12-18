@@ -14,6 +14,11 @@ cp .env.example .env
 - **Dovetail** - User research analysis (6 commands)
 - **Confluence** - Documentation management (4 commands)
 
+## Slash Commands
+
+- `/create-prd` - Create a Product Requirements Document in Confluence with AI assistance
+- `/update-docs` - Update QUICK_REFERENCE.md and README.md to sync with current skills and features
+
 ## Command Summary
 
 ### Productboard
