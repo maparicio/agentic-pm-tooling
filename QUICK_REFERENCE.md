@@ -16,8 +16,13 @@ cp .env.example .env
 
 ## Slash Commands
 
-- `/create-prd` - Create a Product Requirements Document in Confluence with AI assistance
-- `/update-docs` - Update QUICK_REFERENCE.md and README.md to sync with current skills and features
+- `/create-prd` - Create a Product Requirements Document in Confluence with AI assistance. Guides you through gathering product context, selecting a template, and generating a comprehensive PRD with proper Confluence formatting.
+- `/update-docs` - Update QUICK_REFERENCE.md and README.md to sync with current skills and features. Analyzes the codebase to find all available commands and skills, then updates documentation to ensure it remains accurate.
+
+## Available Agents
+
+- **productboard-orchestrator** - Specialized agent for Productboard data retrieval and feature exploration. Used internally when you ask about Productboard features, notes, or searches.
+- **quick-reference-sync** - Documentation synchronization specialist. Used internally by `/update-docs` to analyze and sync documentation.
 
 ## Command Summary
 

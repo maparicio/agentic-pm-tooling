@@ -15,10 +15,11 @@ You maintain full control over what data the AI sees. All sensitive data (emails
 
 ## Features
 
-- **PRD Generation** - Create product requirement documents from Productboard features
+- **AI-Assisted PRD Generation** - Use `/create-prd` command to guide PRD creation with template selection and AI content generation
 - **User Research Analysis** - Analyze Dovetail research with participant anonymization
 - **Feature Management** - Fetch and analyze Productboard features with customer anonymization
 - **Cross-Platform Insights** - Synthesize data from multiple sources while preserving privacy
+- **Documentation Sync** - Use `/update-docs` command to automatically sync documentation with current codebase
 
 ## Current Integrations
 
@@ -74,6 +75,15 @@ You maintain full control over what data the AI sees. All sensitive data (emails
 
 ## Usage
 
+### Slash Commands
+
+Use these commands to automate common workflows:
+
+- **`/create-prd`** - Start an interactive PRD creation workflow. You'll be guided through selecting a template and generating a comprehensive PRD with AI assistance, then it will be created in Confluence.
+- **`/update-docs`** - Sync documentation with the current codebase. Analyzes all skills and commands, then updates QUICK_REFERENCE.md and README.md automatically.
+
+### Natural Language Requests
+
 Simply ask Claude Code to help with PM tasks:
 
 ```
@@ -103,11 +113,23 @@ Claude will:
 
 ```
 .claude/
-  agents/              # Agent configurations
-  skills/              # Integration scripts (productboard.js, dovetail.js, confluence.js)
+  agents/              # Sub-agents for specialized orchestration
+    productboard-orchestrator.md    # Productboard data retrieval specialist
+    quick-reference-sync.md         # Documentation synchronization specialist
+  commands/            # Slash commands
+    create-prd.md      # PRD creation workflow
+    update-docs.md     # Documentation synchronization command
+  skills/              # Integration scripts
+    productboard.js    # Productboard API integration
+    dovetail.js        # Dovetail API integration
+    confluence.js      # Confluence API integration
+    productboard.md    # Productboard skill documentation
+    dovetail.md        # Dovetail skill documentation
+    confluence.md      # Confluence skill documentation
 utils/
   pii-filter.js        # PII filtering utility
 .env.example           # Configuration template
+QUICK_REFERENCE.md     # Quick reference guide
 README.md              # This file
 ```
 
@@ -128,11 +150,17 @@ README.md              # This file
 
 ## Documentation
 
+- **[Quick Reference](QUICK_REFERENCE.md)** - Command reference and quick start guide
 - **[PM Assistant Guide](PM_ASSISTANT_GUIDE.md)** - Architecture and workflows
-- **[Quick Reference](QUICK_REFERENCE.md)** - Command reference
-- **[Productboard Skill](.claude/skills/productboard.md)** - Productboard integration
-- **[Dovetail Skill](.claude/skills/dovetail.md)** - Dovetail integration
-- **[Confluence Skill](.claude/skills/confluence.md)** - Confluence integration
+
+### Slash Commands
+- **[/create-prd](.claude/commands/create-prd.md)** - Create Product Requirements Documents in Confluence
+- **[/update-docs](.claude/commands/update-docs.md)** - Sync documentation with codebase
+
+### Skills
+- **[Productboard Skill](.claude/skills/productboard.md)** - Feature management and insights
+- **[Dovetail Skill](.claude/skills/dovetail.md)** - User research and participant insights
+- **[Confluence Skill](.claude/skills/confluence.md)** - Documentation and page management
 
 ## Advanced
 
