@@ -292,6 +292,12 @@ See: `./TESTING.md` for details
 
 ## Recent Changes
 
+### 2025-12-22
+- **Created workspace folder** - Added workspace/ directory for all generated content and temporary files
+- **Added PRODUCT_STRATEGY.md template** - Created PRODUCT_STRATEGY.md.example with OKR format for product vision, objectives, and domain documentation
+- **Updated CLAUDE.md** - Added guideline to always use workspace/ folder for generated content and reference PRODUCT_STRATEGY.md for context
+- **Updated .gitignore** - Added workspace/* (except README), PRODUCT_STRATEGY.md, and /*.html patterns
+
 ### 2025-12-18
 - **Implemented /create-prd slash command** - AI-assisted PRD creation workflow that fetches ProductBoard insights, uses Confluence template structures, and creates formatted PRD pages in Confluence
 - **Created first PRD using /create-prd** - Generated "Percentage Field Type PRD" in Confluence (page ID: 3944284162) based on ProductBoard feature d15be8db-7147-4842-8451-e8b5b3331fd6

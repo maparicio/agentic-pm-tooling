@@ -27,3 +27,7 @@ temp/
 # Project-specific files (keep examples only)
 PRODUCT_STRATEGY.md
 /*.html
+
+# Workspace folder - generated content and temporary files
+workspace/*
+!workspace/README.md
