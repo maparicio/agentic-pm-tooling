@@ -23,3 +23,6 @@ cache/
 # Temporary files
 tmp/
 temp/
+
+# Project-specific files (keep examples only)
+PRODUCT_STRATEGY.md
