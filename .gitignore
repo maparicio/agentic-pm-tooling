@@ -26,4 +26,4 @@ temp/
 
 # Project-specific files (keep examples only)
 PRODUCT_STRATEGY.md
-custom-gremlin-dashboard-filters-prd.html
+/*.html
