@@ -1,0 +1,118 @@
+# Product Strategy
+
+## PRODUCT VISION
+
+Describe the product vision for your company. This should be an aspirational statement about what you want to achieve with your product and how it will impact customers and the market.
+
+**Example:** We envision a world where product teams can make data-driven decisions effortlessly by unifying insights from multiple sources into a single, AI-powered platform that transforms raw data into actionable intelligence.
+
+---
+
+## COMPANY OBJECTIVES
+
+Current company objectives that align with overall business goals and strategic direction.
+
+### Objective 1 - Expand Market Share in Enterprise Segment
+**Description:** Increase our presence in the enterprise market by targeting Fortune 500 companies and establishing strategic partnerships.
+
+**Key Results:**
+- Acquire 25 new enterprise customers (>1000 employees) by Q4
+- Achieve 95% retention rate for existing enterprise accounts
+- Launch enterprise-specific features requested by top 10 customers
+
+### Objective 2 - Improve Product-Market Fit
+**Description:** Validate and strengthen product-market fit by deeply understanding customer needs and iterating on core features.
+
+**Key Results:**
+- Achieve NPS score of 50+ across all customer segments
+- Reduce time-to-value for new customers from 30 days to 10 days
+- Increase feature adoption rate from 40% to 65% for core features
+
+### Objective 3 - Build a Scalable Revenue Model
+**Description:** Establish sustainable revenue growth through optimized pricing and expansion strategies.
+
+**Key Results:**
+- Grow ARR by 150% year-over-year
+- Increase average contract value by 35%
+- Achieve 120% net revenue retention
+
+---
+
+## PRODUCT OBJECTIVES
+
+Product-specific objectives that support company objectives and drive product development.
+
+### Objective 1 - Deliver AI-Powered Insights
+**Description:** Integrate AI capabilities throughout the product to automate analysis and surface actionable insights.
+
+**Key Results:**
+- Launch AI-powered insights dashboard with 80% accuracy rate
+- Achieve 60% daily active usage of AI features among paid users
+- Reduce time spent on manual data analysis by 70% as reported by users
+
+### Objective 2 - Enhance Platform Integration Capabilities
+**Description:** Expand integrations with third-party tools to create a unified data ecosystem.
+
+**Key Results:**
+- Launch 10 new integrations with top requested tools
+- Achieve 90% data sync reliability across all integrations
+- Enable bi-directional sync for top 5 integrations
+
+### Objective 3 - Improve Platform Performance and Reliability
+**Description:** Ensure the platform can scale with customer growth while maintaining excellent performance.
+
+**Key Results:**
+- Achieve 99.9% uptime SLA
+- Reduce page load times to under 2 seconds for 95th percentile
+- Support 10x increase in data volume without performance degradation
+
+---
+
+## DOMAINS
+
+Product domains represent the key areas your team is working on. Each domain has specific ownership, goals, and guidelines.
+
+### Domain 1 - Analytics & Reporting
+**Description:** This domain covers all analytics capabilities, reporting features, dashboard creation, and data visualization tools. It includes both pre-built analytics and custom reporting functionality.
+
+**Special Instructions:**
+- Prioritize performance optimization for large datasets (>1M rows)
+- Always include export functionality for any new report type
+- Ensure all analytics features are accessible via API
+- Follow the data governance framework for handling sensitive metrics
+
+### Domain 2 - Integrations & Data Sync
+**Description:** Responsible for all third-party integrations, data synchronization, ETL pipelines, and API connectors. Ensures seamless data flow between external tools and our platform.
+
+**Special Instructions:**
+- Use webhook-based sync where available to reduce API call volume
+- Implement exponential backoff for retry logic on all integrations
+- Document rate limits and sync frequency for each integration
+- Maintain integration health monitoring dashboard
+
+### Domain 3 - AI & Machine Learning
+**Description:** Encompasses all AI-powered features including predictive analytics, natural language processing, automated insights generation, and recommendation systems.
+
+**Special Instructions:**
+- All AI features must include explainability/transparency mechanisms
+- Model performance metrics must be tracked in production
+- Implement fallback logic for when AI confidence is below threshold
+- Provide user feedback loops to improve model accuracy
+
+### Domain 4 - User Experience & Interface
+**Description:** Covers the product's user interface, interaction design, accessibility, and overall user experience across web and mobile platforms.
+
+**Special Instructions:**
+- Follow WCAG 2.1 Level AA accessibility standards
+- Mobile-first design approach for all new features
+- Conduct usability testing with at least 5 users before major releases
+- Maintain design system consistency across all interfaces
+
+### Domain 5 - Platform Infrastructure
+**Description:** Backend systems, databases, API architecture, security, authentication, and platform scalability.
+
+**Special Instructions:**
+- All APIs must follow RESTful design principles
+- Implement rate limiting on all public endpoints
+- Security review required for any changes to authentication/authorization
+- Document all breaking API changes with 90-day deprecation notice
