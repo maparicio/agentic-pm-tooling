@@ -10,9 +10,9 @@ cp .env.example .env
 
 ## Available Skills
 
-- **Productboard** - Product feature management (6 commands)
-- **Dovetail** - User research analysis (6 commands)
-- **Confluence** - Documentation management (4 commands)
+- **Productboard** - Product feature management (6 commands: feature, features, search, get-note, notes, all-notes)
+- **Dovetail** - User research analysis (6 commands: projects, project, insights, highlights, tags, search)
+- **Confluence** - Documentation management (4 commands: read, create, update, search)
 
 ## Slash Commands
 
@@ -21,8 +21,8 @@ cp .env.example .env
 
 ## Available Agents
 
-- **productboard-orchestrator** - Specialized agent for Productboard data retrieval and feature exploration. Used internally when you ask about Productboard features, notes, or searches.
-- **quick-reference-sync** - Documentation synchronization specialist. Used internally by `/update-docs` to analyze and sync documentation.
+- **productboard-orchestrator** - Specialized agent for Productboard data retrieval and feature exploration. Uses the Productboard skill to fetch features, search features, retrieve notes, and explore product management information. Automatically handles data formatting and PII filtering.
+- **quick-reference-sync** - Documentation synchronization specialist. Analyzes the codebase to ensure QUICK_REFERENCE.md and README.md remain accurate with all current skills, commands, and features. Used internally by `/update-docs`.
 
 ## Command Summary
 

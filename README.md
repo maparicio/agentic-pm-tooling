@@ -52,13 +52,24 @@ You maintain full control over what data the AI sees. All sensitive data (emails
    - **Dovetail**: Settings → Integrations → API → Generate token
    - **Confluence**: Atlassian Account → Security → API tokens → Create token
 
-   Add tokens to `.env`:
+   Add tokens to `.env` using either naming convention (pick one):
    ```env
+   # Productboard
    PRODUCTBOARD_API_TOKEN=pb_xxxxxxxxxxxxxxxxxxxxx
+
+   # Dovetail
    DOVETAIL_API_TOKEN=dvt_xxxxxxxxxxxxxxxxxxxxx
+
+   # Confluence - Use EITHER Confluence OR Atlassian prefix (not both)
+   # Option A: CONFLUENCE_ prefix (recommended)
    CONFLUENCE_API_TOKEN=your_confluence_token
-   CONFLUENCE_SITE_URL=https://your-site.atlassian.net
+   CONFLUENCE_BASE_URL=https://your-site.atlassian.net
    CONFLUENCE_USER_EMAIL=your@email.com
+
+   # OR Option B: ATLASSIAN_ prefix (alternative)
+   # ATLASSIAN_API_TOKEN=your_confluence_token
+   # ATLASSIAN_SITE_URL=https://your-site.atlassian.net
+   # ATLASSIAN_USER_EMAIL=your@email.com
    ```
 
 4. **Make skills executable:**
@@ -80,7 +91,14 @@ You maintain full control over what data the AI sees. All sensitive data (emails
 Use these commands to automate common workflows:
 
 - **`/create-prd`** - Start an interactive PRD creation workflow. You'll be guided through selecting a template and generating a comprehensive PRD with AI assistance, then it will be created in Confluence.
-- **`/update-docs`** - Sync documentation with the current codebase. Analyzes all skills and commands, then updates QUICK_REFERENCE.md and README.md automatically.
+- **`/update-docs`** - Sync documentation with the current codebase. Analyzes all skills and commands, then updates QUICK_REFERENCE.md and README.md to reflect current implementation.
+
+### Internal Agents
+
+The project includes specialized sub-agents that handle specific tasks:
+
+- **productboard-orchestrator** - Manages Productboard data retrieval and feature exploration. Automatically invoked when you request Productboard features, notes, or searches. Handles data fetching with PII filtering.
+- **quick-reference-sync** - Maintains documentation accuracy. Analyzes the codebase to identify all available skills and commands, then updates documentation files automatically.
 
 ### Natural Language Requests
 
@@ -113,25 +131,40 @@ Claude will:
 
 ```
 .claude/
-  agents/              # Sub-agents for specialized orchestration
-    productboard-orchestrator.md    # Productboard data retrieval specialist
-    quick-reference-sync.md         # Documentation synchronization specialist
-  commands/            # Slash commands
-    create-prd.md      # PRD creation workflow
-    update-docs.md     # Documentation synchronization command
-  skills/              # Integration scripts
-    productboard.js    # Productboard API integration
-    dovetail.js        # Dovetail API integration
-    confluence.js      # Confluence API integration
-    productboard.md    # Productboard skill documentation
-    dovetail.md        # Dovetail skill documentation
-    confluence.md      # Confluence skill documentation
+  agents/                         # Internal sub-agents for specialized tasks
+    productboard-orchestrator.md  # Productboard data retrieval and feature exploration
+    quick-reference-sync.md       # Documentation synchronization specialist
+  commands/                       # Slash commands for CLI workflows
+    create-prd.md                 # /create-prd - Interactive PRD creation
+    update-docs.md                # /update-docs - Documentation synchronization
+  skills/                         # Integration scripts and documentation
+    productboard.js               # Productboard API integration (6 commands)
+    dovetail.js                   # Dovetail API integration (6 commands)
+    confluence.js                 # Confluence API integration (4 commands)
+    productboard.md               # Productboard skill documentation and examples
+    dovetail.md                   # Dovetail skill documentation and examples
+    confluence.md                 # Confluence skill documentation and examples
 utils/
-  pii-filter.js        # PII filtering utility
-.env.example           # Configuration template
-QUICK_REFERENCE.md     # Quick reference guide
-README.md              # This file
+  pii-filter.js                   # PII filtering utility shared across skills
+.env.example                      # Configuration template for API tokens
+.claude.md                        # Project-specific guidelines and instructions
+QUICK_REFERENCE.md                # Quick reference guide for all commands
+README.md                         # This file
 ```
+
+### Agent Capabilities
+
+**productboard-orchestrator** (Sonnet 4.5)
+- Retrieves and organizes Productboard features, notes, and insights
+- Handles all feature queries, searches, and note management
+- Automatically applies PII filtering to sensitive data
+- Delivers structured results to the main Claude thread
+
+**quick-reference-sync** (Haiku 4.5)
+- Analyzes codebase to identify all skills, commands, and agents
+- Compares implementation with documentation
+- Updates QUICK_REFERENCE.md and README.md automatically
+- Ensures documentation accuracy and consistency
 
 ## Security
 
