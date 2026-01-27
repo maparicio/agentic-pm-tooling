@@ -13,6 +13,7 @@ cp .env.example .env
 - **Productboard** - Product feature management (6 commands: feature, features, search, get-note, notes, all-notes)
 - **Dovetail** - User research analysis (6 commands: projects, project, insights, highlights, tags, search)
 - **Confluence** - Documentation management (4 commands: read, create, update, search)
+- **Jira** - Issue tracking and project management (5 commands: read, create, update, search, list-children)
 
 ## Slash Commands
 
@@ -83,6 +84,33 @@ node .claude/skills/confluence.js <command> [options]
 
 📖 **Full documentation:** `.claude/skills/confluence.md`
 
+### Jira
+
+```bash
+node .claude/skills/jira.js <command> [options]
+```
+
+**Commands:**
+- `read <issue-key>` - Fetch issue by key
+- `create <project-key> "<summary>" [parent-key]` - Create issue (description via stdin)
+- `update <issue-key>` - Update issue (content via stdin)
+- `search "<jql>"` - Search issues using JQL
+- `list-children <parent-key>` - List child issues of a parent
+
+**Create Options:**
+- `--type <type>` - Issue type (default: Task)
+- `--priority <priority>` - Priority level (Low, Medium, High)
+- `--labels <label1,label2>` - Comma-separated labels
+
+**Description formats:**
+- ADF JSON (Atlassian Document Format)
+- Markdown (auto-converted to ADF)
+
+**Update via stdin:**
+- JSON with fields: `{"summary":"...","description":{...},"priority":"...","labels":[...]}`
+
+📖 **Full documentation:** `.claude/skills/jira.md`
+
 ## Natural Language Usage
 
 Ask Claude Code naturally:
@@ -92,6 +120,8 @@ Ask Claude Code naturally:
 "Search Dovetail for research about checkout and summarize themes"
 "Find all PRD documents in Confluence that mention authentication"
 "Get highlights from Dovetail project abc123 and analyze patterns"
+"Read Jira issue AI-688 and list all its child tasks"
+"Create a Jira task under epic AI-688 with priority High"
 ```
 
 ## Environment Variables
@@ -120,6 +150,15 @@ ATLASSIAN_API_TOKEN=your_token
 ATLASSIAN_SITE_URL=https://yoursite.atlassian.net
 ATLASSIAN_USER_EMAIL=your.email@example.com
 ```
+
+### Jira (Required - uses ATLASSIAN_* prefix)
+```env
+ATLASSIAN_API_TOKEN=your_token
+ATLASSIAN_SITE_URL=https://yoursite.atlassian.net
+ATLASSIAN_USER_EMAIL=your.email@example.com
+```
+
+**Note:** Jira and Confluence can share the same ATLASSIAN_* credentials.
 
 ### PII Filtering (Optional - all default to true)
 ```env
@@ -151,6 +190,9 @@ Check stderr for filtering statistics after each command.
 | Confluence: Authentication failed | Verify `CONFLUENCE_USER_EMAIL` or `ATLASSIAN_USER_EMAIL` is correct |
 | Confluence: Space not found | Use space key (e.g., "PROJ" not "Project Name") |
 | Confluence: Search no results | Try without `--exact` flag, or verify page exists and is indexed |
+| Jira: Issue not found | Verify issue key format (e.g., "AI-123") and permissions |
+| Jira: ADF format error | Use markdown input instead, or check ADF JSON structure |
+| Jira: Invalid JQL query | Verify JQL syntax, use quotes for field values with spaces |
 
 ## Quick Test
 
@@ -159,6 +201,7 @@ Check stderr for filtering statistics after each command.
 node .claude/skills/productboard.js features 5
 node .claude/skills/dovetail.js projects
 node .claude/skills/confluence.js search "PRD" --limit 5
+node .claude/skills/jira.js search "project=AI" key,summary
 ```
 
 All commands output JSON with PII automatically filtered.
@@ -171,3 +214,4 @@ All commands output JSON with PII automatically filtered.
 - **.claude/skills/productboard.md** - Productboard details & examples
 - **.claude/skills/dovetail.md** - Dovetail details & examples
 - **.claude/skills/confluence.md** - Confluence details & examples
+- **.claude/skills/jira.md** - Jira details & examples

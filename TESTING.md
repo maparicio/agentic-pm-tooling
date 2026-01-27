@@ -1,6 +1,6 @@
 # Testing Guide
 
-**Status:** 149 tests passing | ~77% coverage | 21ms execution time ✅
+**Status:** 205 tests passing | ~78% coverage | 38ms execution time ✅
 
 ---
 
@@ -13,13 +13,14 @@
 | PII Filter | 24 | 84% | ✅ Excellent |
 | Dovetail Skill | 48 | ~80% | ✅ Excellent |
 | Productboard Skill | 45 | ~75% | ✅ Good |
+| Jira Skill | 46 | ~85% | ✅ Excellent |
 | Confluence Skill | 37 | ~40% | ✅ Good |
 
-**Total:** 149 tests, 1,926 lines of test code
+**Total:** 205 tests, 2,570 lines of test code
 
 ### What's NOT Tested (Optional)
 
-- **HTTP Methods** - Confluence readPage(), createPage(), updatePage(), getSpaceId() (would require API mocking)
+- **HTTP Methods** - Jira and Confluence readPage(), createPage(), updatePage(), getSpaceId(), makeRequest() (would require API mocking)
 - **Error Handling** - Network errors, rate limits, auth failures (would require HTTP mocking)
 - **Edge Cases** - Unicode handling, performance with large objects
 
@@ -50,6 +51,7 @@ tests/
 ├── pii-filter.test.js      (227 lines, 24 tests)
 ├── productboard.test.js    (539 lines, 45 tests)
 ├── dovetail.test.js        (639 lines, 48 tests)
+├── jira.test.js            (644 lines, 46 tests)
 └── confluence.test.js      (521 lines, 37 tests)
 ```
 
@@ -89,6 +91,22 @@ tests/
 - HTML structure preservation
 - Error handling (null data, empty objects)
 - Privacy compliance
+
+### Jira Tests
+- Constructor validation (env vars)
+- Issue data filtering and PII removal
+- Reporter, assignee, and creator anonymization
+- ADF (Atlassian Document Format) helper functions
+  - buildParagraph, buildHeading, buildBulletList, buildOrderedList, wrapInADF
+- Markdown-to-ADF converter
+  - Simple paragraphs, multiple paragraphs
+  - Headings (levels 1-6)
+  - Bullet lists (*, -)
+  - Ordered lists (1., 2., 3.)
+  - Bold text (**text**)
+  - Mixed content and complex examples
+- Privacy compliance (no PII leaks)
+- Safe field preservation (status, priority, project, labels)
 
 ---
 
