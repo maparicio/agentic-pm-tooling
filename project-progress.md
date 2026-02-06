@@ -1,6 +1,6 @@
 # Project Progress Tracker
 
-**Last Updated:** 2026-01-14
+**Last Updated:** 2026-02-06
 **Project:** Agentic PM Tooling
 **Version:** 1.1.0
 
@@ -189,6 +189,7 @@ Privacy-first AI assistant for Product Management work, powered by Claude Code. 
 
 **Implemented:**
 - [x] `/create-prd` - AI-assisted PRD creation in Confluence using ProductBoard insights and template structures
+- [x] `/daily-priority` - Daily prioritization routine checking strategy alignment and active initiatives
 - [x] `/update-docs` - Sync QUICK_REFERENCE.md and README.md with current skills and commands using quick-reference-sync agent
 
 **Not Yet Implemented:**
@@ -312,6 +313,7 @@ See: `./TESTING.md` for details
 | Workflow | Status | Notes |
 |----------|--------|-------|
 | PRD Generation | ✅ Supported | Via /create-prd command with AI assistance |
+| Daily Prioritization | ✅ Supported | Via /daily-priority command analyzing Productboard notes and Jira initiatives |
 | User Research Analysis | ✅ Supported | Via Dovetail skill + PII filtering |
 | Cross-Platform Insights | ✅ Supported | Manual coordination via Claude Code |
 | Feature Request Analysis | ✅ Supported | Via Productboard skill |
@@ -333,6 +335,12 @@ See: `./TESTING.md` for details
 ---
 
 ## Recent Changes
+
+### 2026-02-06
+- **Created /daily-priority command** - New slash command for daily prioritization routine that checks Productboard notes and Jira initiatives against PRODUCT_STRATEGY.md
+- **Updated documentation** - Added /daily-priority to QUICK_REFERENCE.md and README.md with comprehensive usage examples
+- **Enhanced README.md** - Added Jira to Current Integrations section, updated prerequisites and setup instructions for Jira, added workspace/ folder to project structure
+- **Documented workspace/ folder** - Clarified that workspace/ is the standard location for all generated content (PRDs, reports, exports)
 
 ### 2026-01-14
 - **Implemented Jira skill** - Complete Jira REST API v3 integration with read, create, update, search, and list-children commands
@@ -418,7 +426,7 @@ See: `./TESTING.md` for details
 - Zero PII leakage to LLM
 
 **Automation:**
-- 2 slash commands implemented (/create-prd, /update-docs)
+- 3 slash commands implemented (/create-prd, /daily-priority, /update-docs)
 - 2 specialized agents configured (productboard-orchestrator, quick-reference-sync)
 
 **Documentation:**
