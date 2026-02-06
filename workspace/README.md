@@ -16,6 +16,7 @@ You can organize this folder however you like. Common subfolders:
 - `prds/` - Product Requirements Documents
 - `reports/` - Analysis reports
 - `exports/` - Exported data from integrations
+- `plans/` - Implementation Plans
 
 ## Note
 

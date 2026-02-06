@@ -338,6 +338,7 @@ See: `./TESTING.md` for details
 
 ### 2026-02-06
 - **Created /daily-priority command** - New slash command for daily prioritization routine that checks Productboard notes and Jira initiatives against PRODUCT_STRATEGY.md
+- **Optimized /daily-priority command** - Modified to use productboard-orchestrator subagent instead of direct skill calls to save context space
 - **Updated documentation** - Added /daily-priority to QUICK_REFERENCE.md and README.md with comprehensive usage examples
 - **Enhanced README.md** - Added Jira to Current Integrations section, updated prerequisites and setup instructions for Jira, added workspace/ folder to project structure
 - **Documented workspace/ folder** - Clarified that workspace/ is the standard location for all generated content (PRDs, reports, exports)

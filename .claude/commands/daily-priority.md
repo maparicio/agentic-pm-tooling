@@ -13,16 +13,17 @@ Read the PRODUCT_STRATEGY.md file to understand:
 
 **Step 2: Fetch Latest Productboard Notes**
 
-Use the Productboard skill to retrieve the 100 most recent notes:
-```bash
-node .claude/skills/productboard.js all-notes 100
-```
+Use the Task tool with the productboard-orchestrator subagent to retrieve the 100 most recent notes and analyze them:
 
-Analyze these notes against the product strategy to identify:
-- Which notes align with current strategic domains (AI & Agents, Better Dashboard Stories, Less GREMLIN Confusion, Future State Step 1)
-- Customer feedback patterns that support or challenge current priorities
+Launch the productboard-orchestrator agent with the following task:
+"Fetch the 100 most recent notes from Productboard and provide a summary including:
+- Note IDs, titles, and key themes
+- Which notes align with strategic domains (AI & Agents, Better Dashboard Stories, Less GREMLIN Confusion, Future State Step 1)
+- Customer feedback patterns
 - Emerging themes that may require strategic attention
-- High-impact insights that need immediate follow-up
+- High-impact insights that need immediate follow-up"
+
+The agent will handle the Productboard interaction and return the analyzed data.
 
 **Step 3: Check Jira Initiatives**
 
