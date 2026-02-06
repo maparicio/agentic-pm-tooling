@@ -16,6 +16,7 @@ You maintain full control over what data the AI sees. All sensitive data (emails
 ## Features
 
 - **AI-Assisted PRD Generation** - Use `/create-prd` command to guide PRD creation with template selection and AI content generation
+- **Daily Prioritization** - Use `/daily-priority` command to analyze strategic alignment across Productboard insights and Jira initiatives
 - **User Research Analysis** - Analyze Dovetail research with participant anonymization
 - **Feature Management** - Fetch and analyze Productboard features with customer anonymization
 - **Cross-Platform Insights** - Synthesize data from multiple sources while preserving privacy
@@ -26,13 +27,14 @@ You maintain full control over what data the AI sees. All sensitive data (emails
 - **Productboard** - Feature management and roadmapping
 - **Dovetail** - User research and insights
 - **Confluence** - Documentation and PRD management
+- **Jira** - Issue tracking and project management
 
 ## Setup
 
 ### Prerequisites
 
 - Node.js 14+
-- API tokens for Productboard and Dovetail
+- API tokens for Productboard, Dovetail, Confluence, and Jira
 
 ### Installation
 
@@ -51,6 +53,7 @@ You maintain full control over what data the AI sees. All sensitive data (emails
    - **Productboard**: Settings → Integrations → API → Generate token
    - **Dovetail**: Settings → Integrations → API → Generate token
    - **Confluence**: Atlassian Account → Security → API tokens → Create token
+   - **Jira**: Atlassian Account → Security → API tokens → Create token (can share with Confluence)
 
    Add tokens to `.env` using either naming convention (pick one):
    ```env
@@ -70,6 +73,11 @@ You maintain full control over what data the AI sees. All sensitive data (emails
    # ATLASSIAN_API_TOKEN=your_confluence_token
    # ATLASSIAN_SITE_URL=https://your-site.atlassian.net
    # ATLASSIAN_USER_EMAIL=your@email.com
+
+   # Jira (uses ATLASSIAN_ prefix, can share with Confluence)
+   ATLASSIAN_API_TOKEN=your_atlassian_token
+   ATLASSIAN_SITE_URL=https://your-site.atlassian.net
+   ATLASSIAN_USER_EMAIL=your@email.com
    ```
 
 4. **Make skills executable:**
@@ -82,6 +90,7 @@ You maintain full control over what data the AI sees. All sensitive data (emails
    node .claude/skills/productboard.js features 5
    node .claude/skills/dovetail.js projects
    node .claude/skills/confluence.js search "Product Requirements"
+   node .claude/skills/jira.js search "project=AI" key,summary
    ```
 
 ## Usage
@@ -91,6 +100,7 @@ You maintain full control over what data the AI sees. All sensitive data (emails
 Use these commands to automate common workflows:
 
 - **`/create-prd`** - Start an interactive PRD creation workflow. You'll be guided through selecting a template and generating a comprehensive PRD with AI assistance, then it will be created in Confluence.
+- **`/daily-priority`** - Run your daily prioritization routine. Analyzes the 100 latest Productboard notes and in-progress Jira initiatives against your PRODUCT_STRATEGY.md, generating a comprehensive report with actionable recommendations in workspace/.
 - **`/update-docs`** - Sync documentation with the current codebase. Analyzes all skills and commands, then updates QUICK_REFERENCE.md and README.md to reflect current implementation.
 
 ### Internal Agents
@@ -105,6 +115,7 @@ The project includes specialized sub-agents that handle specific tasks:
 Simply ask Claude Code to help with PM tasks:
 
 ```
+"Run my daily priority check"
 "Fetch Productboard feature 12345 and create a PRD in Confluence"
 "Analyze Dovetail highlights from project abc123 about checkout flows"
 "Compare Productboard requests with Dovetail research on mobile payments"
@@ -136,16 +147,20 @@ Claude will:
     quick-reference-sync.md       # Documentation synchronization specialist
   commands/                       # Slash commands for CLI workflows
     create-prd.md                 # /create-prd - Interactive PRD creation
+    daily-priority.md             # /daily-priority - Daily prioritization routine
     update-docs.md                # /update-docs - Documentation synchronization
   skills/                         # Integration scripts and documentation
     productboard.js               # Productboard API integration (6 commands)
     dovetail.js                   # Dovetail API integration (6 commands)
     confluence.js                 # Confluence API integration (4 commands)
+    jira.js                       # Jira API integration (5 commands)
     productboard.md               # Productboard skill documentation and examples
     dovetail.md                   # Dovetail skill documentation and examples
     confluence.md                 # Confluence skill documentation and examples
+    jira.md                       # Jira skill documentation and examples
 utils/
   pii-filter.js                   # PII filtering utility shared across skills
+workspace/                        # Generated content (PRDs, reports, exports)
 .env.example                      # Configuration template for API tokens
 .claude.md                        # Project-specific guidelines and instructions
 QUICK_REFERENCE.md                # Quick reference guide for all commands
@@ -188,12 +203,14 @@ README.md                         # This file
 
 ### Slash Commands
 - **[/create-prd](.claude/commands/create-prd.md)** - Create Product Requirements Documents in Confluence
+- **[/daily-priority](.claude/commands/daily-priority.md)** - Daily prioritization and strategic alignment checks
 - **[/update-docs](.claude/commands/update-docs.md)** - Sync documentation with codebase
 
 ### Skills
 - **[Productboard Skill](.claude/skills/productboard.md)** - Feature management and insights
 - **[Dovetail Skill](.claude/skills/dovetail.md)** - User research and participant insights
 - **[Confluence Skill](.claude/skills/confluence.md)** - Documentation and page management
+- **[Jira Skill](.claude/skills/jira.md)** - Issue tracking and project management
 
 ## Advanced
 

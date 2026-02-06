@@ -18,6 +18,7 @@ cp .env.example .env
 ## Slash Commands
 
 - `/create-prd` - Create a Product Requirements Document in Confluence with AI assistance. Guides you through gathering product context, selecting a template, and generating a comprehensive PRD with proper Confluence formatting.
+- `/daily-priority` - Daily prioritization routine checking strategy alignment and active initiatives. Analyzes 100 latest Productboard notes and in-progress Jira initiatives against PRODUCT_STRATEGY.md, generating actionable recommendations in workspace/.
 - `/update-docs` - Update QUICK_REFERENCE.md and README.md to sync with current skills and features. Analyzes the codebase to find all available commands and skills, then updates documentation to ensure it remains accurate.
 
 ## Available Agents
@@ -117,6 +118,7 @@ Ask Claude Code naturally:
 
 ```
 "Fetch Productboard feature 12345 and create a PRD in Confluence"
+"Run my daily priority check and show me what needs attention"
 "Search Dovetail for research about checkout and summarize themes"
 "Find all PRD documents in Confluence that mention authentication"
 "Get highlights from Dovetail project abc123 and analyze patterns"
