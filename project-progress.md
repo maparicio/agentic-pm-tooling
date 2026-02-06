@@ -48,11 +48,12 @@ Privacy-first AI assistant for Product Management work, powered by Claude Code. 
 - [x] `features [limit] [--owner <alias>]` - List features (default: 20)
 - [x] `get-note <note-id>` - Fetch specific note by ID
 - [x] `notes <feature-id>` - Fetch notes for a feature
-- [x] `all-notes [limit] [--owner <alias>]` - List all workspace notes
+- [x] `all-notes [limit] [--owner <alias>] [--state <state>]` - List all workspace notes with optional state filtering
 - [x] `search "<query>"` - Search features by keyword
 
 **Features:**
 - [x] Owner email alias system (privacy-preserving filtering)
+- [x] State filtering for notes (unprocessed, processed, archived, all)
 - [x] Automatic PII filtering for all responses
 - [x] API rate limit handling
 - [x] Pagination support
@@ -282,13 +283,13 @@ See: `./TESTING.md` for details
 - [x] Mocha test framework configured
 - [x] NYC code coverage reporting
 - [x] PIIFilter comprehensive test suite (24 tests)
-- [x] Productboard skill test suite (45 tests)
+- [x] Productboard skill test suite (52 tests)
 - [x] Dovetail skill test suite (48 tests)
 - [x] Jira skill test suite (46 tests - includes ADF helpers and markdown converter)
 - [x] Confluence skill test suite (37 tests, partial - HTTP methods not tested)
 
 **Test Coverage:**
-- Total: 205 tests, 2,570 lines of test code
+- Total: 212 tests
 - Overall coverage: ~78%
 - All core PII filtering and data transformation logic tested
 
@@ -337,6 +338,7 @@ See: `./TESTING.md` for details
 ## Recent Changes
 
 ### 2026-02-06
+- **Added state filtering for Productboard notes** - New `--state` flag for `all-notes` command to filter by unprocessed, processed, archived, or all notes (client-side filtering since API doesn't support server-side state filtering)
 - **Created /daily-priority command** - New slash command for daily prioritization routine that checks Productboard notes and Jira initiatives against PRODUCT_STRATEGY.md
 - **Optimized /daily-priority command** - Modified to use productboard-orchestrator subagent instead of direct skill calls to save context space
 - **Updated documentation** - Added /daily-priority to QUICK_REFERENCE.md and README.md with comprehensive usage examples
@@ -436,7 +438,7 @@ See: `./TESTING.md` for details
 - 1 test documentation file (TESTING.md)
 
 **Testing:**
-- 205 tests with ~78% code coverage
+- 212 tests with ~78% code coverage
 - Mocha + NYC configured
 - Test suite includes PIIFilter, Productboard, Dovetail, Jira, and Confluence
 - ADF helper functions and markdown converter fully tested

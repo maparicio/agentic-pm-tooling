@@ -466,6 +466,156 @@ describe('ProductboardClient', () => {
     });
   });
 
+  describe('State Filtering', () => {
+    beforeEach(() => {
+      client = new ProductboardClient();
+    });
+
+    it('should validate state filter values', async () => {
+      // Mock the makeRequest to return sample data
+      const originalMakeRequest = client.makeRequest;
+      client.makeRequest = async () => ({
+        data: [
+          { id: '1', title: 'Note 1', state: 'unprocessed' },
+          { id: '2', title: 'Note 2', state: 'processed' },
+          { id: '3', title: 'Note 3', state: 'archived' }
+        ]
+      });
+
+      // Valid states should not throw
+      await client.listAllNotes(100, { state: 'unprocessed' });
+      await client.listAllNotes(100, { state: 'processed' });
+      await client.listAllNotes(100, { state: 'archived' });
+      await client.listAllNotes(100, { state: 'all' });
+
+      // Invalid state should throw
+      try {
+        await client.listAllNotes(100, { state: 'invalid' });
+        assert.fail('Should have thrown error for invalid state');
+      } catch (error) {
+        assert.ok(error.message.includes('Invalid state filter'));
+        assert.ok(error.message.includes('invalid'));
+      }
+
+      client.makeRequest = originalMakeRequest;
+    });
+
+    it('should filter notes by unprocessed state', async () => {
+      const originalMakeRequest = client.makeRequest;
+      client.makeRequest = async () => ({
+        data: [
+          { id: '1', title: 'Note 1', state: 'unprocessed' },
+          { id: '2', title: 'Note 2', state: 'processed' },
+          { id: '3', title: 'Note 3', state: 'unprocessed' },
+          { id: '4', title: 'Note 4', state: 'archived' }
+        ]
+      });
+
+      const result = await client.listAllNotes(100, { state: 'unprocessed' });
+
+      assert.strictEqual(result.data.length, 2);
+      assert.ok(result.data.every(note => note.state === 'unprocessed'));
+      assert.ok(result._stateFilterNote.includes('unprocessed'));
+
+      client.makeRequest = originalMakeRequest;
+    });
+
+    it('should filter notes by processed state', async () => {
+      const originalMakeRequest = client.makeRequest;
+      client.makeRequest = async () => ({
+        data: [
+          { id: '1', title: 'Note 1', state: 'unprocessed' },
+          { id: '2', title: 'Note 2', state: 'processed' },
+          { id: '3', title: 'Note 3', state: 'processed' }
+        ]
+      });
+
+      const result = await client.listAllNotes(100, { state: 'processed' });
+
+      assert.strictEqual(result.data.length, 2);
+      assert.ok(result.data.every(note => note.state === 'processed'));
+
+      client.makeRequest = originalMakeRequest;
+    });
+
+    it('should filter notes by archived state', async () => {
+      const originalMakeRequest = client.makeRequest;
+      client.makeRequest = async () => ({
+        data: [
+          { id: '1', title: 'Note 1', state: 'archived' },
+          { id: '2', title: 'Note 2', state: 'processed' },
+          { id: '3', title: 'Note 3', state: 'unprocessed' }
+        ]
+      });
+
+      const result = await client.listAllNotes(100, { state: 'archived' });
+
+      assert.strictEqual(result.data.length, 1);
+      assert.strictEqual(result.data[0].state, 'archived');
+
+      client.makeRequest = originalMakeRequest;
+    });
+
+    it('should return all notes when state is "all"', async () => {
+      const originalMakeRequest = client.makeRequest;
+      client.makeRequest = async () => ({
+        data: [
+          { id: '1', title: 'Note 1', state: 'unprocessed' },
+          { id: '2', title: 'Note 2', state: 'processed' },
+          { id: '3', title: 'Note 3', state: 'archived' }
+        ]
+      });
+
+      const result = await client.listAllNotes(100, { state: 'all' });
+
+      assert.strictEqual(result.data.length, 3);
+      assert.ok(!result._stateFilterNote); // No filter note when "all"
+
+      client.makeRequest = originalMakeRequest;
+    });
+
+    it('should return all notes when no state filter provided', async () => {
+      const originalMakeRequest = client.makeRequest;
+      client.makeRequest = async () => ({
+        data: [
+          { id: '1', title: 'Note 1', state: 'unprocessed' },
+          { id: '2', title: 'Note 2', state: 'processed' }
+        ]
+      });
+
+      const result = await client.listAllNotes(100, {});
+
+      assert.strictEqual(result.data.length, 2);
+      assert.ok(!result._stateFilterNote);
+
+      client.makeRequest = originalMakeRequest;
+    });
+
+    it('should combine state filter with other filters', async () => {
+      const originalMakeRequest = client.makeRequest;
+      let capturedParams;
+      client.makeRequest = async (endpoint, options) => {
+        capturedParams = options.params;
+        return {
+          data: [
+            { id: '1', title: 'Note 1', state: 'unprocessed' },
+            { id: '2', title: 'Note 2', state: 'processed' }
+          ]
+        };
+      };
+
+      process.env.OWNER_EMAIL_ALICE = 'alice@example.com';
+      const result = await client.listAllNotes(100, { state: 'unprocessed', owner: 'alice' });
+
+      // State filter is client-side, but owner filter should be in params
+      assert.strictEqual(capturedParams.ownerEmail, 'alice@example.com');
+      assert.strictEqual(result.data.length, 1);
+      assert.strictEqual(result.data[0].state, 'unprocessed');
+
+      client.makeRequest = originalMakeRequest;
+    });
+  });
+
   describe('Privacy Compliance', () => {
     beforeEach(() => {
       client = new ProductboardClient();

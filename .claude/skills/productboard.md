@@ -62,7 +62,7 @@ node .claude/skills/productboard.js get-note abc-123-def-456
 
 ### List all notes from workspace
 ```bash
-node .claude/skills/productboard.js all-notes [limit] [--owner <alias>]
+node .claude/skills/productboard.js all-notes [limit] [--owner <alias>] [--state <state>]
 ```
 
 Examples:
@@ -70,7 +70,17 @@ Examples:
 node .claude/skills/productboard.js all-notes
 node .claude/skills/productboard.js all-notes 50
 node .claude/skills/productboard.js all-notes 25 --owner alice
+node .claude/skills/productboard.js all-notes 50 --state unprocessed
+node .claude/skills/productboard.js all-notes 100 --state processed --owner bob
 ```
+
+**State filter values:**
+- `unprocessed` - Notes that haven't been reviewed yet (default status for new notes)
+- `processed` - Notes that have been marked as processed after review
+- `archived` - Archived notes
+- `all` - All notes regardless of state (default behavior)
+
+**Note:** State filtering is performed client-side since the ProductBoard API doesn't support server-side state filtering.
 
 **Important:** Notes are ordered by creation date (descending). The `pageCursor` for pagination expires in 1 minute.
 
@@ -103,6 +113,10 @@ You can invoke this skill naturally in conversation:
 > "Get all notes from Productboard and identify common themes"
 
 > "Get insights from Productboard feature 67890 and help me write a PRD"
+
+> "Fetch only unprocessed notes from Productboard"
+
+> "Show me processed notes owned by alice"
 
 **Note:** When filtering by owner, you'll reference them by their alias (e.g., "alice", "bob") which must be configured in your `.env` file. Claude never sees the actual email addresses.
 

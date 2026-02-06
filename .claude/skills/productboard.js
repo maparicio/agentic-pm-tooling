@@ -227,7 +227,7 @@ class ProductboardClient {
    * Ordered by creation date (descending)
    * Note: pageCursor is valid for 1 minute only
    * @param {number} maxResults - Maximum number of results to return
-   * @param {object} filters - Additional filters (e.g., { owner: 'alice', featureId: 'xxx' })
+   * @param {object} filters - Additional filters (e.g., { owner: 'alice', featureId: 'xxx', state: 'unprocessed' })
    */
   async listAllNotes(maxResults = 100, filters = {}) {
     try {
@@ -250,6 +250,17 @@ class ProductboardClient {
       // Filter the array of notes
       if (response.data && Array.isArray(response.data)) {
         response.data = response.data.map(note => this.filterNoteData(note));
+
+        // Apply state filtering (client-side since API doesn't support it)
+        // Valid states: unprocessed, processed, archived, all
+        if (filters.state && filters.state !== 'all') {
+          const validStates = ['unprocessed', 'processed', 'archived'];
+          if (!validStates.includes(filters.state)) {
+            throw new Error(`Invalid state filter: "${filters.state}". Valid values: ${validStates.join(', ')}, all`);
+          }
+          response.data = response.data.filter(note => note.state === filters.state);
+          response._stateFilterNote = `Filtered to ${filters.state} notes (client-side filter)`;
+        }
       }
 
       // Add pagination note
@@ -357,6 +368,7 @@ Commands:
 Options:
   --owner <alias>       - Filter by owner email alias (see .env for setup)
   --feature <id>        - Filter notes by feature ID
+  --state <state>       - Filter notes by state: unprocessed, processed, archived, all (default: all)
 
 Examples:
   node productboard.js feature 12345
@@ -365,6 +377,8 @@ Examples:
   node productboard.js get-note abc-123-def-456
   node productboard.js all-notes 50 --owner bob
   node productboard.js all-notes 50 --feature abc-123
+  node productboard.js all-notes 50 --state unprocessed
+  node productboard.js all-notes 100 --state processed --owner alice
   node productboard.js notes 12345
   node productboard.js search "checkout flow"
 
@@ -399,6 +413,10 @@ Environment Variables Required:
     } else if (args[i] === '--feature' && args[i + 1]) {
       options.featureId = args[i + 1];
       args.splice(i, 2); // Remove --feature and its value from args
+      i--;
+    } else if (args[i] === '--state' && args[i + 1]) {
+      options.state = args[i + 1];
+      args.splice(i, 2); // Remove --state and its value from args
       i--;
     }
   }
