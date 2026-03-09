@@ -616,6 +616,268 @@ describe('ProductboardClient', () => {
     });
   });
 
+  describe('extractDomainsFromStrategy', () => {
+    beforeEach(() => {
+      client = new ProductboardClient();
+    });
+
+    it('should return default domains when strategy file does not exist', () => {
+      const domains = client.extractDomainsFromStrategy('non-existent-file.md');
+      assert.ok(domains['AI & Agents']);
+      assert.ok(domains['Better Dashboard Stories']);
+      assert.ok(domains['Less GREMLIN Confusion']);
+      assert.ok(domains['Future State Step 1']);
+    });
+
+    it('should return domains with keywords as arrays', () => {
+      const domains = client.extractDomainsFromStrategy();
+      Object.values(domains).forEach(keywords => {
+        assert.ok(Array.isArray(keywords));
+        assert.ok(keywords.length > 0);
+      });
+    });
+
+    it('should extract domains from actual PRODUCT_STRATEGY.md', () => {
+      const domains = client.extractDomainsFromStrategy('PRODUCT_STRATEGY.md');
+      // Should have at least some domains
+      assert.ok(Object.keys(domains).length > 0);
+    });
+  });
+
+  describe('analyzeNotes', () => {
+    beforeEach(() => {
+      client = new ProductboardClient();
+    });
+
+    it('should return analysis structure with required fields', () => {
+      const domains = { 'Test Domain': ['test', 'keyword'] };
+      const notes = [];
+      const analysis = client.analyzeNotes(notes, domains);
+
+      assert.ok(analysis.overview);
+      assert.strictEqual(analysis.overview.totalNotes, 0);
+      assert.ok(analysis.domainAlignment);
+      assert.ok(analysis.highImpactNotes);
+      assert.ok(analysis.emergingThemes);
+      assert.ok(analysis.topTags);
+    });
+
+    it('should count notes by state', () => {
+      const domains = { 'Test': ['test'] };
+      const notes = [
+        { id: '1', title: 'Note 1', state: 'unprocessed' },
+        { id: '2', title: 'Note 2', state: 'unprocessed' },
+        { id: '3', title: 'Note 3', state: 'processed' }
+      ];
+      const analysis = client.analyzeNotes(notes, domains);
+
+      assert.strictEqual(analysis.overview.byState.unprocessed, 2);
+      assert.strictEqual(analysis.overview.byState.processed, 1);
+    });
+
+    it('should count notes by source', () => {
+      const domains = { 'Test': ['test'] };
+      const notes = [
+        { id: '1', title: 'Note 1', source: { origin: 'portal' } },
+        { id: '2', title: 'Note 2', source: { origin: 'intercom' } },
+        { id: '3', title: 'Note 3', source: { origin: 'portal' } }
+      ];
+      const analysis = client.analyzeNotes(notes, domains);
+
+      assert.strictEqual(analysis.overview.sources.portal, 2);
+      assert.strictEqual(analysis.overview.sources.intercom, 1);
+    });
+
+    it('should align notes to domains by keyword matching', () => {
+      const domains = { 'Dashboard': ['dashboard', 'report'] };
+      const notes = [
+        { id: '1', title: 'Dashboard improvements', content: 'We need better reports' },
+        { id: '2', title: 'Other feature', content: 'Something else' }
+      ];
+      const analysis = client.analyzeNotes(notes, domains);
+
+      assert.strictEqual(analysis.domainAlignment['Dashboard'].totalNotes, 1);
+      assert.strictEqual(analysis.domainAlignment['Dashboard'].topNotes[0].id, '1');
+    });
+
+    it('should identify high-impact notes', () => {
+      const domains = { 'Test': ['test'] };
+      const notes = [
+        { id: '1', title: 'High impact', features: ['f1', 'f2'], followers: ['u1', 'u2'] },
+        { id: '2', title: 'Low impact', features: [], followers: [] }
+      ];
+      const analysis = client.analyzeNotes(notes, domains);
+
+      assert.strictEqual(analysis.highImpactNotes.length, 1);
+      assert.strictEqual(analysis.highImpactNotes[0].id, '1');
+    });
+
+    it('should extract top tags', () => {
+      const domains = { 'Test': ['test'] };
+      const notes = [
+        { id: '1', title: 'Note 1', tags: ['feedback', 'urgent'] },
+        { id: '2', title: 'Note 2', tags: ['feedback'] },
+        { id: '3', title: 'Note 3', tags: ['bug'] }
+      ];
+      const analysis = client.analyzeNotes(notes, domains);
+
+      assert.ok(analysis.topTags.some(t => t.tag === 'feedback' && t.count === 2));
+    });
+  });
+
+  describe('formatNotesForExport', () => {
+    beforeEach(() => {
+      client = new ProductboardClient();
+    });
+
+    it('should export to JSON format', () => {
+      const notes = [
+        {
+          id: '123',
+          title: 'Test Note',
+          displayUrl: 'https://app.productboard.com/notes/123',
+          state: 'unprocessed',
+          createdAt: '2025-01-01T10:00:00Z',
+          source: { origin: 'portal' },
+          features: ['f1'],
+          tags: ['tag1', 'tag2']
+        }
+      ];
+      const result = client.formatNotesForExport(notes, 'json');
+      const parsed = JSON.parse(result);
+
+      assert.strictEqual(parsed[0].id, '123');
+      assert.strictEqual(parsed[0].linkedFeatures, 1);
+      assert.deepStrictEqual(parsed[0].tags, ['tag1', 'tag2']);
+    });
+
+    it('should export to CSV format', () => {
+      const notes = [
+        {
+          id: '123',
+          title: 'Test Note',
+          displayUrl: 'https://app.productboard.com/notes/123',
+          state: 'unprocessed',
+          createdAt: '2025-01-01T10:00:00Z',
+          source: { origin: 'portal' },
+          features: ['f1'],
+          tags: ['tag1', 'tag2']
+        }
+      ];
+      const result = client.formatNotesForExport(notes, 'csv');
+
+      assert.ok(result.includes('ID,Title,URL,State,Created,Source,Linked Features,Tags'));
+      assert.ok(result.includes('123'));
+      assert.ok(result.includes('Test Note'));
+      assert.ok(result.includes('2025-01-01'));
+    });
+
+    it('should escape quotes in CSV titles', () => {
+      const notes = [
+        {
+          id: '123',
+          title: 'Note with "quotes"',
+          displayUrl: 'url',
+          state: 'unprocessed',
+          createdAt: '2025-01-01T10:00:00Z',
+          features: [],
+          tags: []
+        }
+      ];
+      const result = client.formatNotesForExport(notes, 'csv');
+
+      assert.ok(result.includes('""quotes""'));
+    });
+
+    it('should handle missing fields gracefully', () => {
+      const notes = [
+        { id: '123' }
+      ];
+      assert.doesNotThrow(() => {
+        client.formatNotesForExport(notes, 'csv');
+        client.formatNotesForExport(notes, 'json');
+      });
+    });
+  });
+
+  describe('generateMarkdownReport', () => {
+    beforeEach(() => {
+      client = new ProductboardClient();
+    });
+
+    it('should generate markdown with required sections', () => {
+      const analysis = {
+        overview: {
+          totalNotes: 10,
+          byState: { unprocessed: 7, processed: 3 },
+          sources: { portal: 6, intercom: 4 }
+        },
+        domainAlignment: {
+          'Test Domain': {
+            totalNotes: 5,
+            topNotes: [
+              { title: 'Note 1', url: 'url1', keywords: ['test'] }
+            ]
+          }
+        },
+        highImpactNotes: [
+          { title: 'High Impact', url: 'url', linkedFeatures: 2, followers: 3, state: 'unprocessed' }
+        ],
+        emergingThemes: [
+          { word: 'theme', count: 5 }
+        ],
+        topTags: [
+          { tag: 'feedback', count: 4 }
+        ]
+      };
+      const report = client.generateMarkdownReport(analysis);
+
+      assert.ok(report.includes('# Productboard Notes Analysis Report'));
+      assert.ok(report.includes('## Executive Summary'));
+      assert.ok(report.includes('## Strategic Domain Alignment'));
+      assert.ok(report.includes('## High-Impact Insights'));
+      assert.ok(report.includes('## Emerging Themes'));
+      assert.ok(report.includes('## Top Tags'));
+      assert.ok(report.includes('## Recommendations'));
+    });
+
+    it('should include state distribution', () => {
+      const analysis = {
+        overview: {
+          totalNotes: 10,
+          byState: { unprocessed: 7, processed: 3 },
+          sources: {}
+        },
+        domainAlignment: {},
+        highImpactNotes: [],
+        emergingThemes: [],
+        topTags: []
+      };
+      const report = client.generateMarkdownReport(analysis);
+
+      assert.ok(report.includes('unprocessed'));
+      assert.ok(report.includes('70%'));
+    });
+
+    it('should handle empty analysis gracefully', () => {
+      const analysis = {
+        overview: {
+          totalNotes: 0,
+          byState: {},
+          sources: {}
+        },
+        domainAlignment: {},
+        highImpactNotes: [],
+        emergingThemes: [],
+        topTags: []
+      };
+      assert.doesNotThrow(() => {
+        const report = client.generateMarkdownReport(analysis);
+        assert.ok(report.includes('Total Notes Analyzed:** 0'));
+      });
+    });
+  });
+
   describe('Privacy Compliance', () => {
     beforeEach(() => {
       client = new ProductboardClient();

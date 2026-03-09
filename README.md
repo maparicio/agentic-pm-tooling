@@ -24,7 +24,7 @@ You maintain full control over what data the AI sees. All sensitive data (emails
 
 ## Current Integrations
 
-- **Productboard** - Feature management and roadmapping
+- **Productboard** - Feature management, roadmapping, and note analysis with state filtering (unprocessed, processed, archived)
 - **Dovetail** - User research and insights
 - **Confluence** - Documentation and PRD management
 - **Jira** - Issue tracking and project management

@@ -94,6 +94,49 @@ Example:
 node .claude/skills/productboard.js notes 12345
 ```
 
+### Analyze notes against strategic domains
+```bash
+node .claude/skills/productboard.js analyze [limit] [--strategy <path>] [--state <state>]
+```
+
+Analyzes notes against domains from PRODUCT_STRATEGY.md. Outputs JSON with domain alignment, high-impact notes, and emerging themes.
+
+Examples:
+```bash
+node .claude/skills/productboard.js analyze 100
+node .claude/skills/productboard.js analyze 50 --state unprocessed
+node .claude/skills/productboard.js analyze 100 --strategy custom-strategy.md
+```
+
+### Export notes to CSV or JSON
+```bash
+node .claude/skills/productboard.js export [limit] --format <csv|json> [--output <file>]
+```
+
+Exports notes with key fields: ID, Title, URL, State, Created, Source, Linked Features, Tags.
+
+Examples:
+```bash
+node .claude/skills/productboard.js export 100 --format csv
+node .claude/skills/productboard.js export 50 --format json
+node .claude/skills/productboard.js export 100 --format csv --output workspace/notes.csv
+node .claude/skills/productboard.js export 50 --format json --output workspace/notes.json
+```
+
+### Generate markdown analysis report
+```bash
+node .claude/skills/productboard.js report [limit] [--strategy <path>] [--output <file>]
+```
+
+Generates a comprehensive markdown report with executive summary, domain alignment, high-impact insights, emerging themes, and recommendations.
+
+Examples:
+```bash
+node .claude/skills/productboard.js report 100
+node .claude/skills/productboard.js report 50 --output workspace/analysis-report.md
+node .claude/skills/productboard.js report 100 --state unprocessed --output workspace/unprocessed-report.md
+```
+
 ## Usage in Claude Code
 
 You can invoke this skill naturally in conversation:
@@ -117,6 +160,12 @@ You can invoke this skill naturally in conversation:
 > "Fetch only unprocessed notes from Productboard"
 
 > "Show me processed notes owned by alice"
+
+> "Analyze the latest 100 notes from Productboard against our strategy"
+
+> "Export all notes to a CSV file"
+
+> "Generate a strategic analysis report for the unprocessed notes"
 
 **Note:** When filtering by owner, you'll reference them by their alias (e.g., "alice", "bob") which must be configured in your `.env` file. Claude never sees the actual email addresses.
 

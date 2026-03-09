@@ -1,6 +1,6 @@
 # Project Progress Tracker
 
-**Last Updated:** 2026-02-06
+**Last Updated:** 2026-03-09
 **Project:** Agentic PM Tooling
 **Version:** 1.1.0
 
@@ -50,6 +50,9 @@ Privacy-first AI assistant for Product Management work, powered by Claude Code. 
 - [x] `notes <feature-id>` - Fetch notes for a feature
 - [x] `all-notes [limit] [--owner <alias>] [--state <state>]` - List all workspace notes with optional state filtering
 - [x] `search "<query>"` - Search features by keyword
+- [x] `analyze [limit] [--strategy <path>]` - Analyze notes against strategic domains from PRODUCT_STRATEGY.md
+- [x] `export [limit] --format <csv|json> [--output <file>]` - Export notes to CSV or JSON format
+- [x] `report [limit] [--strategy <path>] [--output <file>]` - Generate markdown analysis report with domain alignment
 
 **Features:**
 - [x] Owner email alias system (privacy-preserving filtering)
@@ -283,13 +286,13 @@ See: `./TESTING.md` for details
 - [x] Mocha test framework configured
 - [x] NYC code coverage reporting
 - [x] PIIFilter comprehensive test suite (24 tests)
-- [x] Productboard skill test suite (52 tests)
+- [x] Productboard skill test suite (68 tests)
 - [x] Dovetail skill test suite (48 tests)
 - [x] Jira skill test suite (46 tests - includes ADF helpers and markdown converter)
 - [x] Confluence skill test suite (37 tests, partial - HTTP methods not tested)
 
 **Test Coverage:**
-- Total: 212 tests
+- Total: 228 tests
 - Overall coverage: ~78%
 - All core PII filtering and data transformation logic tested
 
@@ -336,6 +339,19 @@ See: `./TESTING.md` for details
 ---
 
 ## Recent Changes
+
+### 2026-03-09
+- **Enhanced Productboard skill with analysis commands** - Added three new commands to move workspace analysis scripts into proper skill location:
+  - `analyze [limit]` - Strategic domain alignment analysis against PRODUCT_STRATEGY.md
+  - `export [limit] --format <csv|json>` - CSV/JSON export of notes
+  - `report [limit]` - Markdown report generation with executive summary, domain alignment, and recommendations
+- **Added extractDomainsFromStrategy method** - Parses PRODUCT_STRATEGY.md to extract domains and keywords dynamically
+- **Added analyzeNotes method** - Maps notes to strategic domains, identifies high-impact notes, extracts emerging themes
+- **Added formatNotesForExport method** - Exports notes to CSV or JSON with key fields
+- **Added generateMarkdownReport method** - Generates comprehensive markdown reports with recommendations
+- **Updated Productboard CLI** - Added --strategy, --format, and --output options
+- **Added 16 new tests** - Comprehensive test coverage for all new methods (68 total Productboard tests)
+- **Updated documentation** - QUICK_REFERENCE.md, productboard.md, and project-progress.md
 
 ### 2026-02-06
 - **Added state filtering for Productboard notes** - New `--state` flag for `all-notes` command to filter by unprocessed, processed, archived, or all notes (client-side filtering since API doesn't support server-side state filtering)
@@ -438,7 +454,7 @@ See: `./TESTING.md` for details
 - 1 test documentation file (TESTING.md)
 
 **Testing:**
-- 212 tests with ~78% code coverage
+- 228 tests with ~78% code coverage
 - Mocha + NYC configured
 - Test suite includes PIIFilter, Productboard, Dovetail, Jira, and Confluence
 - ADF helper functions and markdown converter fully tested

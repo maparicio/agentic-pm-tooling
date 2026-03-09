@@ -10,7 +10,7 @@ cp .env.example .env
 
 ## Available Skills
 
-- **Productboard** - Product feature management (6 commands: feature, features, search, get-note, notes, all-notes)
+- **Productboard** - Product feature management (9 commands: feature, features, search, get-note, notes, all-notes, analyze, export, report)
 - **Dovetail** - User research analysis (6 commands: projects, project, insights, highlights, tags, search)
 - **Confluence** - Documentation management (4 commands: read, create, update, search)
 - **Jira** - Issue tracking and project management (5 commands: read, create, update, search, list-children)
@@ -39,8 +39,11 @@ node .claude/skills/productboard.js <command> [options]
 - `feature <id>` - Get specific feature
 - `notes <feature-id>` - Get notes for a feature
 - `get-note <note-id>` - Get specific note
-- `all-notes [limit] [--owner <alias>] [--feature <id>]` - List all notes (default: 100)
+- `all-notes [limit] [--owner <alias>] [--feature <id>] [--state <state>]` - List all notes (default: 100). States: unprocessed, processed, archived, all (default: all)
 - `search "<query>"` - Search features by keyword
+- `analyze [limit] [--strategy <path>] [--state <state>]` - Analyze notes against strategic domains (states: unprocessed, processed, archived, all)
+- `export [limit] [--state <state>] --format <csv|json> [--output <file>]` - Export notes to CSV/JSON
+- `report [limit] [--strategy <path>] [--state <state>] [--output <file>]` - Generate markdown analysis report
 
 **Owner Aliases:** Configure `OWNER_EMAIL_<ALIAS>=email@example.com` in `.env`, then use `--owner <alias>`
 
